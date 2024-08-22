@@ -1,7 +1,7 @@
 const axios = require('axios');
 const cron = require('cron');
 const db = require('./models');
-
+const io = require('socket.io');
 const fetchUsersAndPosts = async () => {
   try {
     // Fetch 500 users from jsonplaceholder
@@ -59,11 +59,17 @@ const fetchUsersAndPosts = async () => {
   }
 };
 
-// Schedule the job to run every hour
-//const job = new cron.CronJob('0 * * * *', fetchUsersAndPosts);
-//job.start();
+//Schedule the job to run every hour
 
+let autobotCount = 0;
+
+// Increment the autobot count every hour for demonstration
+const job = new cron.CronJob('0 * * * *', () => {
+  autobotCount++;
+  io.emit('autobot-count', autobotCount);  // Emit autobot count to all connected clients
+});
+job.start();
 
 // Schedule the job to run 5mins
-const job = new cron.CronJob('*/5 * * * *', fetchUsersAndPosts);
-job.start();
+//const job = new cron.CronJob('*/5 * * * *', fetchUsersAndPosts);
+//job.start();

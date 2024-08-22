@@ -1,13 +1,22 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const http = require('http');
-const socketIo = require('socket.io');
+const cron = require('cron');
+
 const db = require('./models');
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
-const port = process.env.PORT || 3000;
+const io = require('socket.io')(server, {
+    cors: {
+      origin: 'http://localhost:8080',
+      methods: ["GET", "POST"]
+    }
+  });
 
+const port = process.env.PORT || 3000;
+const cors = require('cors');
+// Configure CORS
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
